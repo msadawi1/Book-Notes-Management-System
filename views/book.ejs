@@ -40,15 +40,15 @@
         <div>
             <dt>Created At</dt>
             <dd>
-                <time datetime="<%= book.created_at %>"><%= book.created_at.split('T')[0] %></time>
+                <time datetime="<%= book.created_at %>"><%= book.created_at.split(',')[0] %></time>
             </dd>
         </div>
         <hr class="divider" />
         <div>
             <dt>Last Edited</dt>
             <dd>
-                <% if (book.updated_at) { const iso=new Date(book.updated_at).toISOString(); const displayDate=iso.split('T')[0]; %>
-                    <time datetime="<%= iso %>">
+                <% if (book.updated_at) { const displayDate=book.updated_at.split(',')[0]; %>
+                    <time datetime="<%= book.updated_at %>">
                         <%= displayDate %>
                     </time>
                     <% } %>
@@ -61,6 +61,61 @@
         <button id="save" hidden type="submit" form="editBook">Save</button>
         <button class="danger" hidden>Cancel</button>
     </div>
+        <div id="notes-section">
+            <h2>Notes</h2>
+            <select class="sort">
+                <option value="0" selected>
+                    Note Number
+                </option>
+                <option value="1">
+                    Page Number
+                </option>
+            </select>
+            <form id="create-note-form" action="/books/<%= book.id %>/notes/new" method="post">
+                <h4 hidden>Add Note</h4>
+                <textarea name="content" id="new-note-content" placeholder="Content" hidden required></textarea>
+                <input type="number" name="page-number" placeholder="Page Number" min="1" hidden required>
+                <button type="button">New Note</button>
+                <div id="create-note-actions">
+                    <button type="submit" hidden>Add</button>
+                    <button type="button" hidden>Cancel</button>
+                </div>
+            </form>
+            <ul id="notes"> 
+                <% if (locals.notes) { %>
+                    <% for (let index = 1; index <= notes.length; index++) { %>
+                        <li>
+                            <form class="note" action="/books/<%= book.id %>/notes/<%= notes[index - 1].id %>/edit" method="post">
+                            <div class="note-details">
+                                <p>Note <%= index %></p>
+                                <textarea class="note-content" name="content" required readonly><%= notes[index - 1].content %></textarea>
+                                <p>Page <%= notes[index - 1].page_number %></p>
+                            </div>
+                            <div class="note-actions">
+                                <button type="button"><svg xmlns="http://www.w3.org/2000/svg" fill="black" class="bi bi-pencil" viewBox="0 0 16 16">
+                                        <path
+                                            d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
+                                    </svg></button>
+                                <a href="/books/<%= book.id %>/notes/<%= notes[index - 1].id %>/delete"><svg xmlns="http://www.w3.org/2000/svg" fill="red"
+                                        class="bi bi-trash" viewBox="0 0 16 16">
+                                        <path
+                                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                                        <path
+                                            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                                    </svg></a>
+                                <button type="submit" hidden><span style="font-size: clamp(1.04rem, 3.2vw, 1.2rem); color: green">✔</span></button>
+                                <button type="button" hidden><svg xmlns="http://www.w3.org/2000/svg" fill="red" class="bi bi-x-lg"
+                                    viewBox="0 0 16 16">
+                                    <path
+                                        d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+                                </svg></button>
+                            </div>
+                        </form>
+                        </li>
+                    <% }; %>
+                <% } %>
+            </ul>
+        </div>
 </div>
 
 

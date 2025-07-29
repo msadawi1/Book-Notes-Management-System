@@ -8,6 +8,10 @@ body {
     background-color: #F6F6F6;
 }
 
+textarea {
+    resize: none;
+}
+
 body {
     display: flex;
     flex-direction: column;
@@ -218,7 +222,7 @@ nav {
     color: rgb(152, 152, 152);
 }
 
-#books-section select {
+#books-section select, .sort {
     font-size: 1rem;
     box-shadow: 0px 2px 8px 0 rgba(0, 0, 0, 0.2);
     border-radius: 5px;
@@ -231,7 +235,7 @@ nav {
 }
 
 .search-field:has(input:focus),
-#books-section select:focus {
+#books-section select:focus, .sort {
     box-shadow: 0px 2px 12px 0 rgba(0, 0, 0, 0.4);
 }
 
@@ -414,14 +418,13 @@ nav {
 }
 
 .grid-container input,
-.grid-container textarea {
+.grid-container textarea, #create-note-form textarea, #create-note-form input {
     width: 100%;
     field-sizing: content;
     overflow-y: hidden;
     resize: none;
     box-sizing: border-box;
     border: 1px solid #F6F6F6;
-    ;
     border-radius: 5px;
     outline: none;
     background: none;
@@ -429,13 +432,20 @@ nav {
 }
 
 .grid-container input:not(input:read-only) {
+    background-color: white;
     padding: 0.5rem 1rem;
     border: 1px solid #728196;
 }
 
-.grid-container textarea:not(textarea:read-only) {
+.grid-container textarea:not(textarea:read-only), .note-content:not(.note-content:read-only), #create-note-form textarea:not(textarea:read-only),
+#create-note-form input:not(input:read-only) {
+    background-color: white;
     padding: 0.5rem 1rem;
     border: 1px solid #728196;
+}
+
+.note-content:not(.note-content:read-only) {
+    color: black;
 }
 
 #buttons {
@@ -479,6 +489,118 @@ nav {
     align-self: center;
 }
 
+#notes-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+#notes-section > h2 {
+    font-size: clamp(1.3rem, 4vw, 1.5rem);
+}
+
+.note {
+    display: flex;
+    width: 50%;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.note-details {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.note-details > p:first-child {
+    font-size: clamp(0.91rem, 2.8vw, 1.05rem);
+}
+
+.note-details > p:not(p:first-child), .note-details > textarea {
+    font-family: inherit;
+    font-size: clamp(0.78rem, 2.4vw, 0.9rem);
+    color: #728196;
+}
+
+.note-details .note-content {
+    field-sizing: content;
+    border: none;
+    background: none;
+    outline: none;
+}
+
+#notes {
+    display: flex;
+    list-style-type: none;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.sort {
+    box-shadow: none;
+}
+
+.note-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.note-actions svg {
+    width: clamp(1.04rem, 3.2vw, 1.2rem);
+    height: auto;
+}
+
+.note-actions > button {
+    cursor: pointer;
+}
+
+#create-note-form {
+    display: flex;
+    width: 50%;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+#create-note-form button {
+    text-align: center;
+    min-width: 100px;
+    padding: 0.5rem 1rem;
+    font: 500 clamp(0.9rem, 3vw, 1.1rem) 'Arial', sans-serif;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: #dae3ee;
+    transition: all 0.2s ease-in-out;
+}
+
+#create-note-form button:hover {
+    filter: brightness(0.9);
+}
+
+#create-note-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+#create-note-form textarea, #create-note-form input {
+    text-overflow: ellipsis;
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+}
+
+#create-note-actions > * {
+    flex: 1 1 0;
+    color: white;
+}
+
+#create-note-actions button:first-child {
+    background-color: #2aac1b;
+}
+
+#create-note-actions button:last-child {
+    background-color: #e3293b;
+}
+
 @media screen and (max-width: 767px) {
     .navbar li:last-child {
         display: block;
@@ -488,10 +610,9 @@ nav {
         display: none;
     }
 
-    .books-section select {
+    .books-section select, .sort, #create-note-form, .note {
         width: 100%;
     }
-
     .search-field {
         display: flex;
         align-items: center;

@@ -9,7 +9,7 @@ const port = 3000;
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
+// Homepage
 app.get("/", async (req, res) => {
     try {
         const response = await axios.get('http://localhost:4500/books');
@@ -18,11 +18,18 @@ app.get("/", async (req, res) => {
         const bookDataList = [];
 
         for (const book of books) {
+            const createdAtUTC = new Date(book.created_at); // UTC timestamp from server
+            const createdAtLocalTime = createdAtUTC.toLocaleString(); // Converts to client's local timezone
+            const updatedAtUTC = new Date(book.updated_at); // UTC timestamp from server
+            const updatedATLocalTime = updatedAtUTC.toLocaleString(); // Converts to client's local timezone
+
+            book.created_at = createdAtLocalTime;
+            book.updated_at = updatedATLocalTime;
             bookDataList.push({
                 id: book.id,
                 title: book.title,
                 rating: book.rating,
-                last_edited: book.updated_at.split("T")[0],
+                last_edited: book.updated_at.split(",")[0],
                 cover_url: book.cover_url
             });
         }
@@ -33,11 +40,11 @@ app.get("/", async (req, res) => {
     }
 });
 
-
+// New Book page
 app.get("/add", (req, res) => {
     res.render("create.ejs");
 });
-// TODO: ADD THE NOTE PART LMAAAO
+// Add new book
 app.post("/add", async (req, res) => {
     try {
         const resp = await axios.get(`https://www.googleapis.com/books/v1/volumes`, {
@@ -70,14 +77,27 @@ app.post("/add", async (req, res) => {
         return res.render("create.ejs", { error: errorMsg });
     }
 });
-
+// Book page
 app.get("/books/:id", async (req, res) => {
     const id = req.params.id;
     const response = await axios.get(`http://localhost:4500/books/${id}`);
     const book = response.data;
-    res.render("book.ejs", { book: book });
+    const resp = await axios.get(`http://localhost:4500/books/${id}/notes`);
+    const notes = resp.data;
+
+    const createdAtUTC = new Date(book.created_at); // UTC timestamp from server
+    const createdAtLocalTime = createdAtUTC.toLocaleString(); // Converts to client's local timezone
+    const updatedAtUTC = new Date(book.updated_at); // UTC timestamp from server
+    const updatedATLocalTime = updatedAtUTC.toLocaleString(); // Converts to client's local timezone
+
+    book.created_at = createdAtLocalTime;
+    book.updated_at = updatedATLocalTime;
+    res.render("book.ejs", { 
+        book: book,
+        notes: notes,
+     });
 });
-// edit book route
+// Edit book route
 app.post("/books/:id", async (req, res) => {
     const id = req.params.id;
     const new_review = req.body['review'];
@@ -88,12 +108,11 @@ app.post("/books/:id", async (req, res) => {
     });
     res.redirect(`/books/${id}`);
 });
-
+// Delete book
 app.get("/books/delete/:id", async (req, res) => {
     const id = req.params.id;
     try {
         const response = await axios.delete(`http://localhost:4500/books/${id}`);
-        console.log("Book successfully deleted.");
     } catch (error) {
         if (error.response) {
             console.log(`Error ${error.response.status}: ${error.response.data?.error || "Unknown error"}`);
@@ -105,9 +124,63 @@ app.get("/books/delete/:id", async (req, res) => {
     }
     res.redirect("/");
 });
-
-
-
+// Delete a note
+app.get("/books/:id/notes/:note_id/delete", async (req, res) => {
+    const book_id = req.params.id;
+    const note_id = req.params.note_id;
+    try {
+        const response = await axios.delete(`http://localhost:4500/notes/${note_id}`);
+    } catch (error) {
+        if (error.response) {
+            console.log(`Error ${error.response.status}: ${error.response.data?.error || "Unknown error"}`);
+        } else if (error.request) {
+            console.log("No response from API:", error.request);
+        } else {
+            console.log("Error:", error.message);
+        }
+    }
+    res.redirect(`/books/${book_id}#notes-section`); 
+});
+// Add a note
+app.post("/books/:id/notes/new", async (req, res) => {
+    const book_id = req.params.id;
+    try {
+        const response = await axios.post(`http://localhost:4500/books/${book_id}/notes`, {
+            content: req.body['content'] || '',
+            page_number: req.body['page-number'],
+            id: book_id,
+        });
+    } catch (error) {
+        if (error.response) {
+            console.log(`Error ${error.response.status}: ${error.response.data?.error || "Unknown error"}`);
+        } else if (error.request) {
+            console.log("No response from API:", error.request);
+        } else {
+            console.log("Error:", error.message);
+        }
+    }
+    res.redirect(`/books/${book_id}#notes-section`);
+});
+// Edit a note
+app.post("/books/:id/notes/:note_id/edit", async (req, res) => {
+    const book_id = req.params.id;
+    const note_id = req.params.note_id;
+    try {
+        const response = await axios.patch(`http://localhost:4500/notes/${note_id}`, {
+            content: req.body['content'] || ''
+        });
+    } catch (error) {
+        if (error.response) {
+            console.log(`Error ${error.response.status}: ${error.response.data?.error || "Unknown error"}`);
+        } else if (error.request) {
+            console.log("No response from API:", error.request);
+        } else {
+            console.log("Error:", error.message);
+        }
+    }
+    res.redirect(`/books/${book_id}#notes-section`);
+});
+// New book form auto-fill
 app.get("/search", async (req, res) => {
     let query = req.query['q'];
     if (query.length <= 0)
@@ -141,7 +214,7 @@ app.get("/search", async (req, res) => {
         description: description
      });
 });
-
+// Handle any other route
 app.use((req, res, next) => {
     res.redirect("/");
 });

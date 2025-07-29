@@ -1,7 +1,7 @@
 import db from "../db.js";
 
 export async function getNotesByBook(book_id) {
-    const result = await db.query("SELECT * FROM note WHERE book_id=$1 ORDER BY created_at DESC", [book_id]);
+    const result = await db.query("SELECT * FROM note WHERE book_id=$1 ORDER BY created_at ASC", [book_id]);
     return result.rows;
 }
 

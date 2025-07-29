@@ -29,6 +29,7 @@
 </footer>
 <script>
     $(document).ready(() => {
+        bindNoteButtons();
         $("#menu-btn").click(() => {
             $(".sidebar").toggleClass("showOnMobile");
         });
@@ -44,13 +45,10 @@
                 $(this).closest(".book").toggle(match);
             });
         });
+        const recentValues = $(".books li").get();
         $("#sort-input").on("input", () => {
             let sortMethod = parseInt($("#sort-input").val());
             let list = $(".books li").get();
-            function parseDate(dateStr) {
-                const dateAsString = dateStr.split(" ")[2];
-                return new Date(dateAsString);
-            }
             switch (sortMethod) {
                 case 1:
                     list.sort((a, b) => {
@@ -58,6 +56,7 @@
                         const ratingB = $(b).find(".book-details p:last").text();
                         return ratingB.localeCompare(ratingA);
                     });
+                    $(".books").empty().append(list);
                     break;
                 case 2:
                      list.sort((a, b) => {
@@ -65,6 +64,7 @@
                         const titleB = $(b).find(".book-details p:first").text().toLowerCase();
                         return titleA.localeCompare(titleB);
                     });
+                    $(".books").empty().append(list);
                     break;
                 case 3:
                     list.sort((a, b) => {
@@ -72,17 +72,31 @@
                         const titleB = $(b).find(".book-details p:first").text().toLowerCase();
                         return titleB.localeCompare(titleA);
                     });
+                    $(".books").empty().append(list);
                     break;
                 default:
-                    list.sort((a, b) => {
-                        const dateA = parseDate($(a).find(".book-details p:nth-child(2)").text());
-                        const dateB = parseDate($(b).find(".book-details p:nth-child(2)").text());
-                        console.log(dateA);
-                        return dateB - dateA;
-                    });
+                    $(".books").empty().append(recentValues);
                     break;
             }
-            $(".books").empty().append(list);
+        });
+        let ogNoteList = $("#notes li").get(); 
+        $(".sort").on("input", () => {
+            let sortMethod = parseInt($(".sort").val());
+            let list = $("#notes li").get();
+            switch (sortMethod) {
+                case 1:
+                    list.sort((a, b) => {
+                        const pageA = parseInt($(a).find(".note-details p:last-child").text().replace(/\D/g, ""));
+                        const pageB = parseInt($(b).find(".note-details p:last-child").text().replace(/\D/g, ""));
+                        return pageA - pageB;
+                    });
+                    break;
+                default:
+                    list = ogNoteList.slice();
+                    break;
+            }
+            $("#notes").empty().append(list);
+            bindNoteButtons();
         });
         $("#buttons button:first-child").click(() => {
             $("#editBook input, #editBook textarea").removeAttr("readonly");
@@ -97,7 +111,7 @@
         });
         $("#buttons button:last-child").click(() => {
             $("#editBook input, #editBook textarea").each(function () {
-                $(this).val(originalValues[this.name]);
+                $(this).val(bookOriginalValues[this.name]);
             });
             $("#editBook input, #editBook textarea").attr("readonly", true);
             $("#buttons button:first-child").show();
@@ -105,10 +119,41 @@
             $("#buttons #save").hide();
             $("#buttons button:last-child").hide();
         });
-        const originalValues = {};
+        const bookOriginalValues = {};
         $("#editBook input, #editBook textarea").each(function () {
-            originalValues[this.name] = $(this).val();
-        })
+            bookOriginalValues[this.name] = $(this).val();
+        });
+        function bindNoteButtons() {
+            $(".note").each(function () {
+                const $note = $(this);
+                const $textarea = $note.find("textarea");
+                const $editBtn = $note.find("button").eq(0);
+                const $deleteBtn = $note.find("a");
+                const $saveBtn = $note.find("button[type='submit']");
+                const $cancelBtn = $note.find("button").last();
+
+                const noteOriginalValue = $textarea.val();
+
+                $editBtn.off("click").on("click", () => {
+                    $textarea.removeAttr("readonly").focus();
+                    const len = $textarea.val().length;
+                    $textarea[0].setSelectionRange(len, len);
+
+                    $editBtn.hide();
+                    $deleteBtn.hide();
+                    $saveBtn.show();
+                    $cancelBtn.show();
+                });
+
+                $cancelBtn.off("click").on("click", () => {
+                    $textarea.val(noteOriginalValue).attr("readonly", true);
+                    $editBtn.show();
+                    $deleteBtn.show();
+                    $saveBtn.hide();
+                    $cancelBtn.hide();
+                });
+            });
+        }
         $("#search").keydown((event) => {
             if (event.key === "Enter") {
                 event.preventDefault();
@@ -142,6 +187,24 @@
             }
             else
                 alert("Deleting book...");
+        });
+        $("#create-note-form > button").click(() => {
+            $("#create-note-form > textarea").show().focus();
+            $("#create-note-form > input").show();
+            $("#create-note-form > div button").show();
+            $("#create-note-form > h4").show();
+            $("#create-note-form > button").hide();
+        });
+        $("#create-note-form button:last-child").click(() => {
+            $("#create-note-form > textarea").hide();
+            $("#create-note-form > input").hide();
+            $("#create-note-form > div button").hide();
+            $("#create-note-form > h4").hide();
+            $("#create-note-form > button").show();
+        });
+        $("#create-note-form > input").on("input", () => {
+            if($("#create-note-form > input").val() < 0)
+                $("#create-note-form > input").val(1);
         });
     });
 </script>
