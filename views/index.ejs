@@ -1,0 +1,53 @@
+<%- include("partials/header.ejs") %>
+
+<div class="content">
+    <div class="hero">
+        <h1>Your Reading Notes, Organized</h1>
+        <p>Capture and organize your thoughts on every book you read. Never lose a valuable insight again.</p>
+        <button>Get Started</button>
+    </div>
+    <div id="books-section">
+        <h2>My Books</h2>
+        <div class="search-field">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search"
+                viewBox="0 0 16 16">
+                <path
+                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+            </svg>
+            <input id="search-input" type="search" placeholder="Search books">
+        </div>
+        <select id="sort-input">
+            <option value="0" selected>
+                Recent
+            </option>
+            <option value="1">
+                Rating
+            </option>
+            <option value="2">
+                A - Z
+            </option>
+            <option value="3">
+                Z - A
+            </option>
+        </select>
+        <ul class="books">
+            <% if (locals.books) { %>
+                <% books.forEach(book => { %>
+                    <li class="book">
+                        <a href="/books/<%= book.id %>"><img
+                                src=<%= book.cover_url === "UNDEFINED" ? '/images/404.png' : book.cover_url %>
+                                alt="Book Cover">
+                        </a>
+                        <section class="book-details">
+                            <p><%= book.title %></p>
+                            <p>Last Edited: <%= book.last_edited  %></p>
+                            <p>Rating: <%= book.rating %>/10</p>
+                        </section>
+                    </li>
+                <% }); %>
+            <% } %>
+        </ul>
+    </div>
+</div>
+
+<%- include("partials/footer.ejs") %>

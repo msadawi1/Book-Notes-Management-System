@@ -1,0 +1,67 @@
+<%- include("partials/header.ejs") %>
+
+<div class="wrapper">
+    <div class="reference">
+        <a href="/#books-section">Books / </a><span><%= book.title %></span>
+    </div>
+    <div class="title">
+        <h1><%= book.title %></h1>
+        <p>by <%= book.author %></p>
+    </div>
+    <img id="cover" src="<%= book.cover_url === "UNDEFINED" ? '/images/404.png' : book.cover_url %>"
+                    alt="Book Cover">
+    <form id="editBook" class="grid-container" action="/books/<%= book.id %>" method="post">
+        <div>
+            <dt>ISBN</dt>
+            <dd><%= book.isbn %></dd>
+        </div>
+        <hr class="divider"/>
+        <div>
+            <dt>Publish Year</dt>
+            <dd><%= book.publish_year %></dd>
+        </div>
+        <hr class="divider" />
+        <div>
+            <dt>Description</dt>
+            <dd><%= book.description %></dd>
+        </div>
+        <hr class="divider" />
+        <div>
+            <dt>Review</dt>
+            <dd><textarea name="review" readonly required><%= book.review %></textarea>
+        </dd>
+        </div>
+        <hr class="divider" />
+        <div>
+            <dt>Rating</dt>
+            <dd><input id="book-rating" type="number" name="rating" value="<%= book.rating %>" step="any" min="0" max="10" readonly required></dd>
+        </div>
+        <hr class="divider" />
+        <div>
+            <dt>Created At</dt>
+            <dd>
+                <time datetime="<%= book.created_at %>"><%= book.created_at.split('T')[0] %></time>
+            </dd>
+        </div>
+        <hr class="divider" />
+        <div>
+            <dt>Last Edited</dt>
+            <dd>
+                <% if (book.updated_at) { const iso=new Date(book.updated_at).toISOString(); const displayDate=iso.split('T')[0]; %>
+                    <time datetime="<%= iso %>">
+                        <%= displayDate %>
+                    </time>
+                    <% } %>
+            </dd>
+        </div>
+    </form>
+    <div id="buttons">
+        <button>Edit</button>
+        <a href="/books/delete/<%= book.id %>" id="delete" class="danger">Delete</a>
+        <button id="save" hidden type="submit" form="editBook">Save</button>
+        <button class="danger" hidden>Cancel</button>
+    </div>
+</div>
+
+
+<%- include("partials/footer.ejs") %>

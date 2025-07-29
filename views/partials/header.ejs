@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="A book notes web application using NodeJS and PostgreSQL for Angela Yu's Fullstack Course on Udemy">
+    <title>Noti</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/styles/style.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+        integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+    <nav>
+        <ul class="navbar">
+            <li><a href="/">Notii</a></li>
+            <li class="hideOnMobile"><a href="/#books-section">Books</a></li>
+            <li class="hideOnMobile"><a href="/add">New Book</a></li>
+            <li><button id="menu-btn">
+                ☰
+            </button></li>
+        </ul>
+        <ul class="sidebar">
+            <li><button id="sidebar-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                    <path
+                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                </svg>
+            </button></li>
+            <li><a href="/">Notii</a></li>
+            <li><a href="/#books-section">Books</a></li>
+            <li><a href="/add">New Book</a></li>
+        </ul>
+    </nav>
+    </header>
+    <main>
