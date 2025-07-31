@@ -71,16 +71,6 @@
                     Page Number
                 </option>
             </select>
-            <form id="create-note-form" action="/books/<%= book.id %>/notes/new" method="post">
-                <h4 hidden>Add Note</h4>
-                <textarea name="content" id="new-note-content" placeholder="Content" hidden required></textarea>
-                <input type="number" name="page-number" placeholder="Page Number" min="1" hidden required>
-                <button type="button">New Note</button>
-                <div id="create-note-actions">
-                    <button type="submit" hidden>Add</button>
-                    <button type="button" hidden>Cancel</button>
-                </div>
-            </form>
             <ul id="notes"> 
                 <% if (locals.notes) { %>
                     <% for (let index = 1; index <= notes.length; index++) { %>
@@ -115,6 +105,16 @@
                     <% }; %>
                 <% } %>
             </ul>
+            <form id="create-note-form" action="/books/<%= book.id %>/notes/new" method="post">
+                <h4 hidden>Add Note</h4>
+                <textarea name="content" id="new-note-content" placeholder="Content" hidden required></textarea>
+                <input type="number" name="page-number" placeholder="Page Number" min="1" hidden required>
+                <button type="button">New Note</button>
+                <div id="create-note-actions">
+                    <button type="submit" hidden>Add</button>
+                    <button type="button" hidden>Cancel</button>
+                </div>
+            </form>
         </div>
 </div>
 
